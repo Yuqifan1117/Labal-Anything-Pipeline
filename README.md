@@ -21,12 +21,15 @@ from diffusers import StableDiffusionPipeline
 from diffusers import StableDiffusionInpaintPipeline
 ```
 ## Generated Cases
-- **label word:** person, beach, surfboard
+- **label word:** 
+
+person, beach, surfboard
 
 - **High quality description prompt automatically generated:**
+
 A couple enjoys a relaxing day at the beach with the man walking together with the woman, holding a big surfboard.  The serene scene is complete with the sound of waves and the warm sun and there are many people lying on the beach. 
 
-- **Generated images in magic scenarios**
+- **Generated images in magic scenarios:**
 
 ![](./assets/raw_image.jpg)
 ![](./assets/grounded_sam_output_1.jpg)
