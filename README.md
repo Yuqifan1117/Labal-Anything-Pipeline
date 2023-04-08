@@ -1,5 +1,8 @@
 # Annotation-anything-pipeline
-Annotation anything in one-pipeline
+
+**This project is under construction and we will have all the code ready soon.**
+
+GPT-4 can do anything even in visual tasks——Annotation anything just all in one-pipeline
 
 Using stable diffusion to generate and annotate bounding boxes and masks for object detection and segmentation just in one-pipeline! 
 
