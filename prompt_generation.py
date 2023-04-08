@@ -3,7 +3,7 @@ import requests
 import json
 
 config = {}    
-config["openai_key"] = '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'
+config["openai_key"] = # [your-openai-apikey]
 config["model"] = "gpt-3.5-turbo"
 config["use_completion"] = False
 use_completion = config["use_completion"]
