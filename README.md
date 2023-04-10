@@ -11,7 +11,13 @@ Using stable diffusion to generate and annotate bounding boxes and masks for obj
 2. Generally, given a raw image from the website or AIGC, SAM generated the masked region for source image and GroundingDINO generated the open-set detection results just in one step. Then, we filter overlap bounding boxes and obtain non-ambiguity annotations.
 3. Mixture text prompt and clip model to select the region by similaity scores, which can be finally used to generate the target edited image with stable-diffusion-inpaint pipeline.
 
-Use ```bash grounded_sam.sh``` to initialize the annotation pipeline. 
+## Features
+- Highlight features:
+  - Pretrained ControlNet with SAM mask as condition enables the image generation with fine-grained control.
+  - category-unrelated SAM mask enables more forms of editing and generation.
+  - ChatGPT self-chatting enables text guidance-free control for magic image generation in various scenarios.
+  - **high-resolution images and high-quality annotations effectively enhance large-scale datasets**.
+
 ## Run Demos
 - download visual foundation models
 ```bash
@@ -22,6 +28,10 @@ wget https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alp
 ```python
 from diffusers import StableDiffusionPipeline
 from diffusers import StableDiffusionInpaintPipeline
+```
+- initialize the annotation pipeline. 
+```bash
+bash grounded_sam.sh
 ```
 ## Generated Cases
 - **label word:** 
