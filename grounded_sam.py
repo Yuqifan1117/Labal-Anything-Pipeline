@@ -132,7 +132,6 @@ if __name__ == "__main__":
         "--sam_checkpoint", type=str, required=True, help="path to checkpoint file"
     )
     parser.add_argument("--input_image", type=str, required=True, help="path to image file")
-    parser.add_argument("--text_prompt", type=str, required=True, help="text prompt")
     parser.add_argument(
         "--output_dir", "-o", type=str, default="outputs", required=True, help="output directory"
     )
@@ -148,7 +147,6 @@ if __name__ == "__main__":
     grounded_checkpoint = args.grounded_checkpoint  # change the path of the model
     sam_checkpoint = args.sam_checkpoint
     image_path = args.input_image
-    text_prompt = args.text_prompt
     output_dir = args.output_dir
     box_threshold = args.box_threshold
     text_threshold = args.box_threshold
