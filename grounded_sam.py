@@ -2,9 +2,10 @@ import argparse
 import json
 import os
 import copy
-
+import nltk
 import numpy as np
 import torch
+import torchvision
 from PIL import Image, ImageDraw, ImageFont
 
 # Grounding DINO
@@ -19,6 +20,9 @@ from segment_anything import build_sam, SamPredictor
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+
+# caption anything
+from transformers import BlipProcessor, BlipForConditionalGeneration
 
 
 def load_image(image_path):
@@ -46,6 +50,23 @@ def load_model(model_config_path, model_checkpoint_path, device):
     _ = model.eval()
     return model
 
+def generate_caption(raw_image):
+    # unconditional image captioning
+    inputs = processor(raw_image, return_tensors="pt").to("cuda", torch.float16)
+    out = blip_model.generate(**inputs)
+    caption = processor.decode(out[0], skip_special_tokens=True)
+    return caption
+def generate_tags(raw_text):
+    # generate specific categories in the caption
+    tags = {'nouns':[], 'adj':[]}
+    text = nltk.word_tokenize(raw_text)
+    tagged=nltk.pos_tag(text)
+    for i in tagged:
+        if i[1][0] == "N":
+            tags['nouns'].append(i[0])
+        elif i[1][0] == "J":
+            tags['adj'].append(i[0])
+    return tags
 
 def get_grounding_output(model, image, caption, box_threshold, text_threshold, with_logits=True, device="cpu"):
     caption = caption.lower()
@@ -71,6 +92,7 @@ def get_grounding_output(model, image, caption, box_threshold, text_threshold, w
     tokenized = tokenlizer(caption)
     # build pred
     pred_phrases = []
+    scores = []
     for logit, box in zip(logits_filt, boxes_filt):
         # convert ids to token (filter stop-words in captions to get tokens)
         pred_phrase = get_phrases_from_posmap(logit > text_threshold, tokenized, tokenlizer)
@@ -78,8 +100,9 @@ def get_grounding_output(model, image, caption, box_threshold, text_threshold, w
             pred_phrases.append(pred_phrase + f"({str(logit.max().item())[:4]})")
         else:
             pred_phrases.append(pred_phrase)
+        scores.append(logit.max().item())
 
-    return boxes_filt, pred_phrases
+    return boxes_filt, pred_phrases, torch.Tensor(scores)
 
 # if iou > 0.9, we consider they are the same box
 def IoU(b1, b2):
@@ -104,10 +127,13 @@ def show_mask(mask, ax, random_color=False):
     mask_image = mask.reshape(h, w, 1) * color.reshape(1, 1, -1)
     ax.imshow(mask_image)
 
-def box_process(box):
+def box_process(box, image_pil):
     processed_box = box.clone()
-    processed_box[:2] = box[:2] - box[2:] / 2
-    processed_box[2:] = box[:2] + box[2:] / 2
+    size = image_pil.size
+    H, W = size[1], size[0]
+    processed_box = processed_box * torch.Tensor([W, H, W, H])
+    processed_box[:2] = processed_box[:2] - processed_box[2:] / 2
+    processed_box[2:] = processed_box[:2] + processed_box[2:]
     return processed_box
 
 def show_box(box, ax, label, random_color=False):
@@ -120,6 +146,36 @@ def show_box(box, ax, label, random_color=False):
     ax.add_patch(plt.Rectangle((x0, y0), w, h, edgecolor=color, facecolor=(0,0,0,0), lw=2)) 
     ax.text(x0, y0, label)
 
+def save_mask_data(output_dir, caption, mask_list, box_list, label_list):
+    value = 0  # 0 for background
+    mask_list = torch.stack(mask_list)
+    mask_img = torch.zeros(mask_list.shape[-2:])
+    for idx, mask in enumerate(mask_list):
+        mask_img[mask.cpu().numpy()[0] == True] = value + idx + 1
+    plt.figure(figsize=(10, 10))
+    plt.imshow(mask_img.numpy())
+    plt.axis('off')
+    plt.savefig(os.path.join(output_dir, 'mask_grassland.jpg'), bbox_inches="tight", dpi=300, pad_inches=0.0)
+
+    json_data = {
+        'caption': caption,
+        'mask':[{
+            'value': value,
+            'label': 'background'
+        }]
+    }
+    for label, box in zip(label_list, box_list):
+        value += 1
+        name, logit = label.split('(')
+        logit = logit[:-1] 
+        json_data['mask'].append({
+            'value': value,
+            'label': name,
+            'logit': float(logit),
+            'box': box.numpy().tolist(),
+        })
+    with open(os.path.join(output_dir, 'label_grassland.json'), 'w') as f:
+        json.dump(json_data, f)
 
 if __name__ == "__main__":
 
@@ -162,57 +218,57 @@ if __name__ == "__main__":
     # visualize raw image
     image_pil.save(os.path.join(output_dir, "raw_image.jpg"))
 
-    # run grounding dino model
-    category_set = json.load(open('/home/qifan/InstuctSGG/self_instruction/label_words.json'))
+    # run grounding dino model with specific category set
+    category_set = json.load(open('label_words.json'))
     category_texts = []
-    prompt_template = ""
     for k in category_set:
-        category_texts.append(prompt_template + category_set[k])
+        category_texts.append(category_set[k])
+    # generate caption and tags for categories and run grounding dino model with captions
+    processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
+    blip_model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large", torch_dtype=torch.float16).to("cuda")
+    caption = generate_caption(image_pil)
+    print(f"Caption: {caption}")
+    tags = generate_tags(caption)
+    for tag in tags['nouns']:
+        if tag not in category_texts:
+            category_texts.append(tag)
+
     total_boxes = []
     total_predphrases = []
+    total_scores = []
     for category in category_texts:
-        boxes_filt, pred_phrases = get_grounding_output(
+        boxes_filt, pred_phrases, pred_scores = get_grounding_output(
             model, image, category, box_threshold, text_threshold, device=device
         )
         # fuse those overlap bbox with highest score of label
         if boxes_filt.shape[0] > 0:
             total_boxes.append(boxes_filt)
             total_predphrases.append(pred_phrases)
+            total_scores.append(pred_scores)
     valid_boxes = []
     valid_phrases = []
-    for boxes_filt, pred_phrases in zip(total_boxes, total_predphrases):
+    valid_scores = []
+    # filter those overlapped boxes by nms and process boxes into image size (xyxy)
+    for boxes_filt, pred_phrases, pred_scores in zip(total_boxes, total_predphrases, total_scores):
         for i in range(boxes_filt.shape[0]):
-            box = boxes_filt[i]
-            overlap = False
-            for j in range(len(valid_boxes)):
-                # process the bbox results from dino (x_c, y_c, w, h)
-                processed_curbox = box_process(valid_boxes[j])
-                processed_box = box_process(box)
-                iou = IoU(processed_curbox.tolist(), processed_box.tolist())
-                if iou > 0.9:
-                    # consider as the same box
-                    valid_phrases[j] = pred_phrases[i] if float(pred_phrases[i][-5:-1])>float(valid_phrases[j][-5:-1]) else valid_phrases[j]
-                    overlap = True
-                    break
-            if not overlap:
-                valid_boxes.append(box)
-                valid_phrases.append(pred_phrases[i])
+            valid_boxes.append(box_process(boxes_filt[i], image_pil))
+            valid_phrases.append(pred_phrases[i])
+            valid_scores.append(pred_scores[i])
+    valid_boxes = torch.stack(valid_boxes)
+    valid_scores = torch.stack(valid_scores)
+    nms_idx = torchvision.ops.nms(valid_boxes, valid_scores, iou_threshold=0.5).numpy().tolist()
+    valid_boxes = valid_boxes[nms_idx]
+    valid_phrases = [valid_phrases[idx] for idx in nms_idx]
     # initialize SAM
     predictor = SamPredictor(build_sam(checkpoint=sam_checkpoint))
     image = cv2.imread(image_path)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     predictor.set_image(image)
     total_masks = []
-    for boxes_filt in total_boxes:
-        size = image_pil.size
-        H, W = size[1], size[0]
-        for i in range(boxes_filt.size(0)):
-            boxes_filt[i] = boxes_filt[i] * torch.Tensor([W, H, W, H])
-            boxes_filt[i][:2] -= boxes_filt[i][2:] / 2
-            boxes_filt[i][2:] += boxes_filt[i][:2]
-
-        boxes_filt = boxes_filt.cpu()
-        transformed_boxes = predictor.transform.apply_boxes_torch(boxes_filt, image.shape[:2])
+    # mask with accurate bounding boxes
+    for valid_box in valid_boxes:
+        valid_box = valid_box.cpu()
+        transformed_boxes = predictor.transform.apply_boxes_torch(valid_box, image.shape[:2])
 
         masks, _, _ = predictor.predict_torch(
             point_coords = None,
@@ -221,18 +277,18 @@ if __name__ == "__main__":
             multimask_output = False,
         )
         total_masks.append(masks)
-    # draw output image
+    
+    # visualization image
     plt.figure(figsize=(10, 10))
     plt.imshow(image)
     for masks in total_masks:
         for mask in masks:
             show_mask(mask.cpu().numpy(), plt.gca(), random_color=True)
-    # overlapped annotation
-    # for boxes_filt, pred_phrases in zip(total_boxes, total_predphrases):
-    #     for box, label in zip(boxes_filt, pred_phrases):
-    #         show_box(box.numpy(), plt.gca(), label, random_color=True)
     # non-ambiguity annotation
     for valid_box, valid_phrase in zip(valid_boxes, valid_phrases):
         show_box(valid_box.numpy(), plt.gca(), valid_phrase, random_color=True)
     plt.axis('off')
-    plt.savefig(os.path.join(output_dir, "annotation_output.jpg"), bbox_inches="tight")
+    plt.savefig(os.path.join(output_dir, "annotation_edit_output_grassland.jpg"), bbox_inches="tight")
+
+    # save for mask annotation data in json
+    save_mask_data(output_dir, caption, total_masks, valid_boxes, valid_phrases)
