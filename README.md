@@ -4,6 +4,16 @@
 
 **GPT-4** can do anything even in visual tasks——Annotation anything just all in one-pipeline.
 
+## NEWs
+**We train the ChatGPT with low-cost and can generate semantically rich prompts for AIGC models creating fantastic images.**
+
+|  Concept / Idea Words   | ChatGPT Prompt Template | AIGC Generated Image | VLM Generated Captions | VFM Automantic Annotations |
+|  ----  | ----  | ----  | ----  | ----  |
+| Nordic-style decoration room | I want to use artificial intelligence to synthesize the {*Nordic-style decoration room*}. Please describe the features of the {*Nordic-style decoration room*} briefly in English  |![image](https://user-images.githubusercontent.com/48062034/231210930-7810456d-af9a-4d3c-a9a7-4083dea202b3.png) | a rendering of a living room with a couch, table, chairs, and a window. | ![image](https://user-images.githubusercontent.com/48062034/231211593-f625c41b-7534-40cf-89f4-f094891efc17.png)
+
+Automantic Prompts for AIGC models:
+- A room with Nordic-style decoration typically features a clean and minimalist design, with a focus on functionality and simplicity. The color scheme is often light and muted, with shades of white, beige, and gray dominating the palette, creating a sense of calm and tranquility. The furniture is typically made of light-colored wood, with clean lines and simple shapes, and may include iconic Nordic pieces such as a Wegner chair or a Poul Henningsen lamp. Decorative items such as cozy blankets, natural materials like wool or fur, or plants add a touch of warmth and texture to the room. Lighting is often used to create a soft and inviting atmosphere, with natural light streaming in through large windows or artificial light provided by Nordic-inspired fixtures. Overall, a room with Nordic-style decoration creates a sense of simplicity, harmony, and coziness, with a focus on comfort and functionality.
+
 Using stable diffusion to generate and annotate bounding boxes and masks for object detection and segmentation just in one-pipeline! 
 
 **LLM is a data specialist based on AIGC models.**  
@@ -34,6 +44,8 @@ from diffusers import StableDiffusionInpaintPipeline
 bash grounded_sam.sh
 ```
 ## Generated Cases
+### Fantastic Control-Generation by ChatGPT
+
 - **label word:** 
 
 person, beach, surfboard
@@ -50,7 +62,7 @@ A couple enjoys a relaxing day at the beach with the man walking together with t
 ## :bookmark_tabs: Catelog
 - [x] ChatGPT chat for AIGC model
 - [x] Annotate segmentation and detection
-- [ ] Annotate segmentation and detection for Conditional Diffusion Demo
+- [x] Annotate segmentation and detection for Conditional Diffusion Demo
 
 # Reference 
 
