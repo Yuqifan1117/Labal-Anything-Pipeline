@@ -4,6 +4,13 @@
 
 **GPT-4** can do anything even in visual tasks——Annotation anything just all in one-pipeline.
 
+## NEWs
+**We train the ChatGPT with low-cost and can generate semantically rich prompts for AIGC models creating fantastic images.**
+
+|  Concept / Idea Words   | ChatGPT Prompt Template | AIGC Generated Image | VLM Generated Captions | VFM Automantic Annotations |
+|  ----  | ----  | ----  | ----  | ----  |
+| Nordic-style decoration room | I want to use artificial intelligence to synthesize the {<font color=red>Nordic-style decoration room</font>}. Please describe the features of the {Nordic-style decoration room} briefly in English  |![image](https://user-images.githubusercontent.com/48062034/231210930-7810456d-af9a-4d3c-a9a7-4083dea202b3.png) | a rendering of a living room with a couch, table, chairs, and a window. | ![image](https://user-images.githubusercontent.com/48062034/231211593-f625c41b-7534-40cf-89f4-f094891efc17.png)
+
 Using stable diffusion to generate and annotate bounding boxes and masks for object detection and segmentation just in one-pipeline! 
 
 **LLM is a data specialist based on AIGC models.**  
@@ -34,6 +41,8 @@ from diffusers import StableDiffusionInpaintPipeline
 bash grounded_sam.sh
 ```
 ## Generated Cases
+### Fantastic Control-Generation by ChatGPT
+
 - **label word:** 
 
 person, beach, surfboard
