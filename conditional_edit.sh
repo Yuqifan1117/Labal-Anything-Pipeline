@@ -3,10 +3,11 @@ python grounded_edit.py \
   --config GroundingDINO/groundingdino/config/GroundingDINO_SwinB.cfg.py \
   --grounded_checkpoint checkpoints/groundingdino_swinb_cogcoor.pth \
   --sam_checkpoint checkpoints/sam_vit_h_4b8939.pth \
-  --input_image example.jpg \
+  --input_image inpaint_demo.jpg \
   --output_dir "outputs" \
   --box_threshold 0.3 \
   --text_threshold 0.25 \
-  --text_prompt "beach" \
-  --edit_prompt "grassland" \
+  --text_prompt "dog" \
+  --reverse True \
+  --edit_prompt "chair by the sunny day" \
   --device "cuda"

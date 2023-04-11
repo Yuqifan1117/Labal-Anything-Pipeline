@@ -212,11 +212,12 @@ if __name__ == "__main__":
     os.makedirs(output_dir, exist_ok=True)
     # load image and process with PIL
     image_pil, image = load_image(image_path)
+
     # load model
     model = load_model(config_file, grounded_checkpoint, device=device)
 
     # visualize raw image
-    image_pil.save(os.path.join(output_dir, "raw_image.jpg"))
+    image_pil.save(os.path.join(output_dir, "room_image.jpg"))
 
     # run grounding dino model with specific category set
     category_set = json.load(open('label_words.json'))
@@ -250,7 +251,6 @@ if __name__ == "__main__":
     valid_scores = []
     valid_categories = set()
     # filter those overlapped boxes by nms and process boxes into image size (xyxy)
-    print(total_predphrases)
     for boxes_filt, pred_phrases, pred_scores in zip(total_boxes, total_predphrases, total_scores):
         for i in range(boxes_filt.shape[0]):
             valid_boxes.append(box_process(boxes_filt[i], image_pil))
@@ -325,7 +325,7 @@ if __name__ == "__main__":
     for valid_box, valid_phrase in zip(valid_boxes, valid_phrases):
         show_box(valid_box.numpy(), plt.gca(), valid_phrase, random_color=True)
     plt.axis('off')
-    plt.savefig(os.path.join(output_dir, "annotation_edit_output_river.jpg"), bbox_inches="tight")
+    plt.savefig(os.path.join(output_dir, "annotation_edit_output_room.jpg"), bbox_inches="tight")
 
     # save for mask annotation data in json
     save_mask_data(output_dir, caption, total_masks, valid_boxes, valid_phrases)
