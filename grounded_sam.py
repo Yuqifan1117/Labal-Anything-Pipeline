@@ -50,7 +50,7 @@ def load_model(model_config_path, model_checkpoint_path, device):
     _ = model.eval()
     return model
 
-def generate_caption(raw_image):
+def generate_caption(raw_image, processor, blip_model):
     # unconditional image captioning
     inputs = processor(raw_image, return_tensors="pt").to("cuda", torch.float16)
     out = blip_model.generate(**inputs)
@@ -226,7 +226,7 @@ if __name__ == "__main__":
     # generate caption and tags for categories and run grounding dino model with captions
     processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
     blip_model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large", torch_dtype=torch.float16).to("cuda")
-    caption = generate_caption(image_pil)
+    caption = generate_caption(image_pil, processor, blip_model)
     print(f"Caption: {caption}")
     tags = generate_tags(caption)
     for tag in tags['nouns']:
@@ -248,14 +248,51 @@ if __name__ == "__main__":
     valid_boxes = []
     valid_phrases = []
     valid_scores = []
+    valid_categories = set()
     # filter those overlapped boxes by nms and process boxes into image size (xyxy)
+    print(total_predphrases)
     for boxes_filt, pred_phrases, pred_scores in zip(total_boxes, total_predphrases, total_scores):
         for i in range(boxes_filt.shape[0]):
             valid_boxes.append(box_process(boxes_filt[i], image_pil))
             valid_phrases.append(pred_phrases[i])
             valid_scores.append(pred_scores[i])
+            valid_categories.add(pred_phrases[i].split('(')[0])
     valid_boxes = torch.stack(valid_boxes)
     valid_scores = torch.stack(valid_scores)
+
+    # internal fusion for better recognization
+    fusion_boxes = []
+    fusion_scores = []
+    fusion_phrases = []
+    for c in valid_categories:
+        c_boxes = []
+        c_scores = []
+        c_phrases = []
+        for box, phrase, score in zip(valid_boxes, valid_phrases, valid_scores): 
+            if phrase.split('(')[0] == c:
+                c_boxes.append(box)
+                c_scores.append(score)
+                c_phrases.append(phrase)
+        c_boxes = torch.stack(c_boxes)
+        c_scores = torch.stack(c_scores)
+        c_nms_idx = torchvision.ops.nms(c_boxes, c_scores, iou_threshold=0.5).numpy().tolist() 
+        final_boxes = c_boxes[c_nms_idx]
+        final_phrases = [c_phrases[idx] for idx in c_nms_idx]
+        final_scores = []
+        for i in range(final_boxes.shape[0]):
+            final_score = 0.0
+            for c_box, c_score in zip(c_boxes, c_scores):
+                if IoU(c_box.numpy(), final_boxes[i].numpy()) > 0.5:
+                    final_score += c_score.item()
+            final_scores.append(final_score)
+        for final_box, final_phrase, final_score in zip(final_boxes, final_phrases, final_scores):
+            fusion_boxes.append(final_box)
+            fusion_phrases.append(final_phrase)
+            fusion_scores.append(torch.tensor(final_score, dtype=torch.float32))
+    # fusion scores for the same label and same box
+    valid_boxes = torch.stack(fusion_boxes)
+    valid_scores = torch.stack(fusion_scores)
+    valid_phrases = fusion_phrases
     nms_idx = torchvision.ops.nms(valid_boxes, valid_scores, iou_threshold=0.5).numpy().tolist()
     valid_boxes = valid_boxes[nms_idx]
     valid_phrases = [valid_phrases[idx] for idx in nms_idx]
@@ -288,7 +325,7 @@ if __name__ == "__main__":
     for valid_box, valid_phrase in zip(valid_boxes, valid_phrases):
         show_box(valid_box.numpy(), plt.gca(), valid_phrase, random_color=True)
     plt.axis('off')
-    plt.savefig(os.path.join(output_dir, "annotation_edit_output_grassland.jpg"), bbox_inches="tight")
+    plt.savefig(os.path.join(output_dir, "annotation_edit_output_river.jpg"), bbox_inches="tight")
 
     # save for mask annotation data in json
     save_mask_data(output_dir, caption, total_masks, valid_boxes, valid_phrases)
