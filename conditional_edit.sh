@@ -8,6 +8,5 @@ python grounded_edit.py \
   --box_threshold 0.3 \
   --text_threshold 0.25 \
   --text_prompt "dog" \
-  --reverse True \
-  --edit_prompt "chair by the sunny day" \
+  --edit_prompt "a sitting cat" \
   --device "cuda"
