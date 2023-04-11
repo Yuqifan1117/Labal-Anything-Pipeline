@@ -45,6 +45,7 @@ bash grounded_sam.sh
 ```
 ## Generated Cases
 ### Fantastic Control-Generation by ChatGPT
+![image](https://user-images.githubusercontent.com/48062034/231222391-5423f45c-6133-45f0-81b1-be0cdaeda545.png)
 
 - **label word:** 
 
