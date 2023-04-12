@@ -1,6 +1,6 @@
 # Annotation-anything-pipeline
 > **[Annotation-anything-pipeline](https://github.com/Yuqifan1117/Annotation-anything-pipeline)**  
-> Qifan Yu, Juncheng Li, and Yueting Zhuang 
+> Qifan Yu, Juncheng Li, Siliang Tang, and Yueting Zhuang 
 > Zhejiang Univerisity
 
 **This project is under construction and we will have all the code ready soon.**
@@ -89,7 +89,7 @@ If you find this work useful for your research, please cite our paper and star o
 ```bibtex
 @misc{yu2023annotation,
     title = {Annotation Anything in All One Pipeline},
-    author = {Yu, Qifan and Li, Juncheng and Zhuang, Yueting},
+    author = {Yu, Qifan and Li, Juncheng and Tang, Siliang and Zhuang, Yueting},
     howpublished = {\url{https://github.com/Yuqifan1117/Annotation-anything-pipeline}},
     year = {2023}
 }
