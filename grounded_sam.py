@@ -155,7 +155,7 @@ def save_mask_data(output_dir, caption, mask_list, box_list, label_list):
     plt.figure(figsize=(10, 10))
     plt.imshow(mask_img.numpy())
     plt.axis('off')
-    plt.savefig(os.path.join(output_dir, 'mask_grassland.jpg'), bbox_inches="tight", dpi=300, pad_inches=0.0)
+    plt.savefig(os.path.join(output_dir, 'mask_test.jpg'), bbox_inches="tight", dpi=300, pad_inches=0.0)
 
     json_data = {
         'caption': caption,
@@ -174,7 +174,7 @@ def save_mask_data(output_dir, caption, mask_list, box_list, label_list):
             'logit': float(logit),
             'box': box.numpy().tolist(),
         })
-    with open(os.path.join(output_dir, 'label_grassland.json'), 'w') as f:
+    with open(os.path.join(output_dir, 'label_test.json'), 'w') as f:
         json.dump(json_data, f)
 
 if __name__ == "__main__":
@@ -188,6 +188,7 @@ if __name__ == "__main__":
         "--sam_checkpoint", type=str, required=True, help="path to checkpoint file"
     )
     parser.add_argument("--input_image", type=str, required=True, help="path to image file")
+    parser.add_argument("--specific_label", nargs='+', required=False, default=[], help="path to image file")
     parser.add_argument(
         "--output_dir", "-o", type=str, default="outputs", required=True, help="output directory"
     )
@@ -207,7 +208,7 @@ if __name__ == "__main__":
     box_threshold = args.box_threshold
     text_threshold = args.box_threshold
     device = args.device
-
+    specific_label = args.specific_label
     # make dir
     os.makedirs(output_dir, exist_ok=True)
     # load image and process with PIL
@@ -217,22 +218,30 @@ if __name__ == "__main__":
     model = load_model(config_file, grounded_checkpoint, device=device)
 
     # visualize raw image
-    image_pil.save(os.path.join(output_dir, "room_image.jpg"))
-
-    # run grounding dino model with specific category set
-    category_set = json.load(open('label_words.json'))
-    category_texts = []
-    for k in category_set:
-        category_texts.append(category_set[k])
+    image_pil.save(os.path.join(output_dir, "test.jpg"))        
+    
     # generate caption and tags for categories and run grounding dino model with captions
     processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
     blip_model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large", torch_dtype=torch.float16).to("cuda")
     caption = generate_caption(image_pil, processor, blip_model)
-    print(f"Caption: {caption}")
-    tags = generate_tags(caption)
-    for tag in tags['nouns']:
-        if tag not in category_texts:
-            category_texts.append(tag)
+
+    # prepare for object detection
+    category_texts = []
+    if len(specific_label) > 0:
+        # run grounding dino model with specific category
+        for label in specific_label:
+            category_texts.append(label)
+    else:
+        # run grounding dino model with total category set
+        category_set = json.load(open('label_words.json'))
+        for k in category_set:
+            category_texts.append(category_set[k])
+
+        print(f"Caption: {caption}")
+        tags = generate_tags(caption)
+        for tag in tags['nouns']:
+            if tag not in category_texts:
+                category_texts.append(tag)
 
     total_boxes = []
     total_predphrases = []
@@ -325,7 +334,7 @@ if __name__ == "__main__":
     for valid_box, valid_phrase in zip(valid_boxes, valid_phrases):
         show_box(valid_box.numpy(), plt.gca(), valid_phrase, random_color=True)
     plt.axis('off')
-    plt.savefig(os.path.join(output_dir, "annotation_edit_output_room.jpg"), bbox_inches="tight")
+    plt.savefig(os.path.join(output_dir, "annotation_edit_test.jpg"), bbox_inches="tight")
 
     # save for mask annotation data in json
     save_mask_data(output_dir, caption, total_masks, valid_boxes, valid_phrases)
