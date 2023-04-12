@@ -1,4 +1,7 @@
 # Annotation-anything-pipeline
+> **[Annotation-anything-pipeline](https://github.com/Yuqifan1117/Annotation-anything-pipeline)**  
+> Qifan Yu, Juncheng Li, and Yueting Zhuang 
+> Zhejiang Univerisity
 
 **This project is under construction and we will have all the code ready soon.**
 
@@ -80,3 +83,14 @@ A couple enjoys a relaxing day at the beach with the man walking together with t
 [3] https://github.com/facebookresearch/segment-anything
 
 [4] https://github.com/IDEA-Research/Grounded-Segment-Anything/
+
+## 📜 Citation
+If you find this work useful for your research, please cite our paper and star our git repo:
+```bibtex
+@misc{yu2023annotation,
+    title = {Annotation Anything in All One Pipeline},
+    author = {Yu, Qifan and Li, Juncheng and Zhuang, Yueting},
+    howpublished = {\url{https://github.com/Yuqifan1117/Annotation-anything-pipeline}},
+    year = {2023}
+}
+```
