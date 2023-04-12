@@ -58,7 +58,13 @@ A couple enjoys a relaxing day at the beach with the man walking together with t
 - **Generated images in magic scenarios:**
 
 ![](./assets/raw_image.jpg)
-![](./assets/grounded_sam_output_1.jpg)
+  - Specific category of object in an image~(only given 'human face')
+  
+  ![image](https://user-images.githubusercontent.com/48062034/231386597-cdfcb8b9-fab3-4924-885b-6016d114ca0e.png)
+  
+  - Total annotations with category sets
+  
+  ![](./assets/grounded_sam_output_1.jpg)
 
 ## :bookmark_tabs: Catelog
 - [x] ChatGPT chat for AIGC model
