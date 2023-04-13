@@ -1,6 +1,6 @@
 # Label-Anything-Pipeline
 > **[Label-Anything-Pipeline](https://github.com/Yuqifan1117/Labal-Anything-Pipeline)**  
-> Qifan Yu, Juncheng Li, Wentao Ye, Siliang Tang, and Yueting Zhuang 
+> Qifan Yu, Juncheng Li, Siliang Tang, and Yueting Zhuang 
 
 > Zhejiang Univerisity
 
@@ -72,8 +72,11 @@ A couple enjoys a relaxing day at the beach with the man walking together with t
 
 ## :bookmark_tabs: Catelog
 - [x] ChatGPT chat for AIGC model
-- [x] Annotate segmentation and detection
+- [x] Label segmentation masks and detection bounding boxes
 - [x] Annotate segmentation and detection for Conditional Diffusion Demo 
+- [x] Using Grounding DINO and Segment Anything for category-specific labelling.
+- [ ] Interactive control on different masks for existing image editing and generated image editing.
+- [ ] ChatGPT guided Controllable Image Editing.
 
 
 # Reference 
