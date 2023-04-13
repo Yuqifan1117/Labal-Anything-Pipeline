@@ -1,12 +1,12 @@
-# Annotation-anything-pipeline
-> **[Annotation-anything-pipeline](https://github.com/Yuqifan1117/Annotation-anything-pipeline)**  
-> Qifan Yu, Juncheng Li, Siliang Tang, and Yueting Zhuang 
+# Label-Anything-Pipeline
+> **[Label-Anything-Pipeline](https://github.com/Yuqifan1117/Labal-Anything-Pipeline)**  
+> Qifan Yu, Juncheng Li, Wentao Ye, Siliang Tang, and Yueting Zhuang 
 
 > Zhejiang Univerisity
 
 **This project is under construction and we will have all the code ready soon.**
 
-**GPT-4** can do anything even in visual tasks——Annotation anything just all in one-pipeline.
+**GPT-4** can do anything even in visual tasks——Label anything just all in one-pipeline.
 
 ## NEWs
 **We train the ChatGPT with low-cost and can generate semantically rich prompts for AIGC models creating fantastic images.**
@@ -73,7 +73,8 @@ A couple enjoys a relaxing day at the beach with the man walking together with t
 ## :bookmark_tabs: Catelog
 - [x] ChatGPT chat for AIGC model
 - [x] Annotate segmentation and detection
-- [x] Annotate segmentation and detection for Conditional Diffusion Demo
+- [x] Annotate segmentation and detection for Conditional Diffusion Demo 
+
 
 # Reference 
 
@@ -89,9 +90,9 @@ A couple enjoys a relaxing day at the beach with the man walking together with t
 If you find this work useful for your research, please cite our paper and star our git repo:
 ```bibtex
 @misc{yu2023annotation,
-    title = {Annotation Anything in All One Pipeline},
+    title = {Label Anything All in One Pipeline},
     author = {Yu, Qifan and Li, Juncheng and Tang, Siliang and Zhuang, Yueting},
-    howpublished = {\url{https://github.com/Yuqifan1117/Annotation-anything-pipeline}},
+    howpublished = {\url{https://github.com/Yuqifan1117/Labal-Anything-Pipeline}},
     year = {2023}
 }
 ```
