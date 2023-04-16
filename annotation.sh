@@ -1,4 +1,4 @@
-export CUDA_VISIBLE_DEVICES=0
+export CUDA_VISIBLE_DEVICES=1
 python grounded_sam.py \
   --config GroundingDINO/groundingdino/config/GroundingDINO_SwinB.cfg.py \
   --grounded_checkpoint checkpoints/groundingdino_swinb_cogcoor.pth \
