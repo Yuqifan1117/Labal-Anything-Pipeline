@@ -38,14 +38,13 @@ Using stable diffusion to generate and annotate bounding boxes and masks for obj
 wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
 wget https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha2/groundingdino_swinb_cogcoor.pth
 ```
-- load AIGC models for generation
-```python
-from diffusers import StableDiffusionPipeline
-from diffusers import StableDiffusionInpaintPipeline
-```
-- initialize the annotation pipeline. 
+- initialize the label anything pipeline 
 ```bash
-bash grounded_sam.sh
+bash annotation.sh
+```
+- load AIGC models for generation in edit pipeline and initialize the controllable editing
+```bash
+bash conditional_edit.sh
 ```
 ## Generated Cases
 ### Fantastic Control-Generation by ChatGPT
