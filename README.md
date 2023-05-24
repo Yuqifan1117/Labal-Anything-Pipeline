@@ -9,6 +9,10 @@
 **GPT-4** can do anything even in visual tasks——Label anything just all in one-pipeline.
 
 ## NEWs
+**We release our [technical report](https://arxiv.org/abs/2305.12799)**(<span style="color:red">🔥NEW</span>)
+
+![image](https://github.com/Yuqifan1117/Labal-Anything-Pipeline/assets/48062034/4d883c85-131c-4888-9302-8d7361cd7073)
+
 **We train the ChatGPT with low-cost and can generate semantically rich prompts for AIGC models creating fantastic images.**
 
 |  Concept / Idea Words   | ChatGPT Prompt Template | AIGC Generated Image | VLM Generated Captions | VFM Automantic Annotations |
@@ -98,10 +102,12 @@ A couple enjoys a relaxing day at the beach with the man walking together with t
 ## 📜 Citation
 If you find this work useful for your research, please cite our paper and star our git repo:
 ```bibtex
-@misc{yu2023annotation,
-    title = {Label Anything All in One Pipeline},
-    author = {Yu, Qifan and Li, Juncheng and Tang, Siliang and Zhuang, Yueting},
-    howpublished = {\url{https://github.com/Yuqifan1117/Labal-Anything-Pipeline}},
-    year = {2023}
+@misc{yu2023interactive,
+      title={Interactive Data Synthesis for Systematic Vision Adaptation via LLMs-AIGCs Collaboration}, 
+      author={Qifan Yu and Juncheng Li and Wentao Ye and Siliang Tang and Yueting Zhuang},
+      year={2023},
+      eprint={2305.12799},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
 }
 ```
