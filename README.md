@@ -1,6 +1,6 @@
 # Label-Anything-Pipeline
 > **[Interactive Data Synthesis for Systematic Vision Adaptation via LLMs-AIGCs Collaboration](https://github.com/Yuqifan1117/Labal-Anything-Pipeline)**  
-> Qifan Yu, Juncheng Li, Wentao Ye, Siliang Tang, and Yueting Zhuang 
+> Qifan Yu, Juncheng Li, Wentao Ye, Siliang Tang, and Yueting Zhuang
 
 > Zhejiang Univerisity
 
@@ -48,8 +48,14 @@ Using stable diffusion to generate and annotate bounding boxes and masks for obj
 ## Run Demos
 - download visual foundation models
 ```bash
+# Segment Anything
 wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
+# GroundingDINO
 wget https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha2/groundingdino_swinb_cogcoor.pth
+# blended model for foreobjects editing
+mkdir -p blended_latent_diffusion/models/ldm/text2img-large/
+wget -O blended_latent_diffusion/models/ldm/text2img-large/blend_model.ckpt https://ommer-lab.com/files/latent-diffusion/nitro/txt2img-f8-large/model.ckpt
+
 ```
 - initialize the label anything pipeline 
 ```bash
@@ -59,6 +65,9 @@ bash annotation.sh
 ```bash
 bash conditional_edit.sh
 ```
+- Config Explaination
+  - label_word(label_word_path): contain the input label word from the user
+  - mode: **'object'** or **'scene'**, the former focuses on *object-centric image generation* while the latter focuses on *complex scene image generation*
 ## Generated Cases
 ### Fantastic Control-Generation by ChatGPT
 ![image](https://user-images.githubusercontent.com/48062034/231222391-5423f45c-6133-45f0-81b1-be0cdaeda545.png)

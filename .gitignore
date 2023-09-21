@@ -134,11 +134,14 @@ dmypy.json
 
 # vscode
 .vscode/
-output/
-outputs/
+chat_demo/
+lama/
+synthetic_finetune/results
 checkpoints/
+LLM_models/
 subs/
 logs/
+synthetic_test/results
 
 pipeline/config/configs
 pipeline/version.py
