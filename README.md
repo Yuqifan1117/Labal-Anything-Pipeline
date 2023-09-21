@@ -15,7 +15,8 @@ Make it easier for users to turn their ideas into accurate images. Generate what
 
 ![image](https://github.com/Yuqifan1117/Labal-Anything-Pipeline/assets/48062034/4d883c85-131c-4888-9302-8d7361cd7073)
 
-**We train the ChatGPT with low cost and can generate semantically rich prompts for AIGC models creating fantastic images.**
+**We train the ChatGPT with low cost and can generate semantically rich prompts for AIGC models creating fantastic images. Even given short words (room), our pipeline imagines vivid scene descriptions and generates the most matched fine-grained images.**
+![Alt text](assets/image-1.png)
 
 |  Concept / Idea Words   | ChatGPT Prompt Template | AIGC Generated Image | VLM Generated Captions | VFM Automantic Annotations |
 |  ----  | ----  | ----  | ----  | ----  |
