@@ -1,25 +1,27 @@
 # Label-Anything-Pipeline
-> **[Label-Anything-Pipeline](https://github.com/Yuqifan1117/Labal-Anything-Pipeline)**  
-> Qifan Yu, Juncheng Li, Siliang Tang, and Yueting Zhuang 
+> **[Interactive Data Synthesis for Systematic Vision Adaptation via LLMs-AIGCs Collaboration](https://github.com/Yuqifan1117/Labal-Anything-Pipeline)**  
+> Qifan Yu, Juncheng Li, Wentao Ye, Siliang Tang, and Yueting Zhuang 
 
 > Zhejiang Univerisity
 
 **This project is under construction and we will have all the code ready soon.**
 
-**GPT-4** can do anything even in visual tasks——Label anything just all in one-pipeline.
+**GPT-4** can do anything even in visual tasks——Label anything and Generate anything just all in one pipeline.
+
+Make it easier for users to turn their ideas into accurate images. Generate whatever you think! (a small baby of **[DALLE 3](https://openai.com/dall-e-3)**)
 
 ## NEWs
 **We release our [technical report](https://arxiv.org/abs/2305.12799)**(<span style="color:red">🔥NEW</span>)
 
 ![image](https://github.com/Yuqifan1117/Labal-Anything-Pipeline/assets/48062034/4d883c85-131c-4888-9302-8d7361cd7073)
 
-**We train the ChatGPT with low-cost and can generate semantically rich prompts for AIGC models creating fantastic images.**
+**We train the ChatGPT with low cost and can generate semantically rich prompts for AIGC models creating fantastic images.**
 
 |  Concept / Idea Words   | ChatGPT Prompt Template | AIGC Generated Image | VLM Generated Captions | VFM Automantic Annotations |
 |  ----  | ----  | ----  | ----  | ----  |
 | Nordic-style decoration room | I want to use artificial intelligence to synthesize the {*Nordic-style decoration room*}. Please describe the features of the {*Nordic-style decoration room*} briefly in English  |![image](https://user-images.githubusercontent.com/48062034/231210930-7810456d-af9a-4d3c-a9a7-4083dea202b3.png) | a rendering of a living room with a couch, table, chairs, and a window. | ![image](https://user-images.githubusercontent.com/48062034/231211593-f625c41b-7534-40cf-89f4-f094891efc17.png)
 
-Automantic Prompts for AIGC models:
+Automatic Prompts for AIGC models:
 - A room with Nordic-style decoration typically features a clean and minimalist design, with a focus on functionality and simplicity. The color scheme is often light and muted, with shades of white, beige, and gray dominating the palette, creating a sense of calm and tranquility. The furniture is typically made of light-colored wood, with clean lines and simple shapes, and may include iconic Nordic pieces such as a Wegner chair or a Poul Henningsen lamp. Decorative items such as cozy blankets, natural materials like wool or fur, or plants add a touch of warmth and texture to the room. Lighting is often used to create a soft and inviting atmosphere, with natural light streaming in through large windows or artificial light provided by Nordic-inspired fixtures. Overall, a room with Nordic-style decoration creates a sense of simplicity, harmony, and coziness, with a focus on comfort and functionality.
 
 **We teach ChatGPT as an assistant to help us imagine various scenes with different backgrounds based on the simple sentence 'A white dog sits on wooden bench.' and generate much data for down-stream tasks by the help of AIGC models.**(<span style="color:red">🔥NEW</span>)
@@ -33,15 +35,15 @@ Using stable diffusion to generate and annotate bounding boxes and masks for obj
 
 **LLM is a data specialist based on AIGC models.**  
 1. ChatGPT acts as an educator to guide AIGC models to generate a variety of controllable images in various scenarios
-2. Generally, given a raw image from the website or AIGC, SAM generated the masked region for source image and GroundingDINO generated the open-set detection results just in one step. Then, we filter overlap bounding boxes and obtain non-ambiguity annotations.
-3. Mixture text prompt and clip model to select the region by similaity scores, which can be finally used to generate the target edited image with stable-diffusion-inpaint pipeline.
+2. Generally, given a raw image from the website or AIGC, SAM generated the masked region for the source image and GroundingDINO generated the open-set detection results just in one step. Then, we filter overlap bounding boxes and obtain non-ambiguity annotations.
+3. Mixture text prompt and clip model to select the region by similarity scores, which can be finally used to generate the target edited image with stable-diffusion-inpaint pipeline.
 
 ## Features
 - Highlight features:
   - Pretrained ControlNet with SAM mask as condition enables the image generation with fine-grained control.
   - category-unrelated SAM mask enables more forms of editing and generation.
   - ChatGPT self-chatting enables text guidance-free control for magic image generation in various scenarios.
-  - **high-resolution images and high-quality annotations effectively enhance large-scale datasets**.
+  - **High-resolution images and high-quality annotations effectively enhance large-scale datasets**.
 
 ## Run Demos
 - download visual foundation models
